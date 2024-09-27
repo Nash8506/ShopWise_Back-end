@@ -5,6 +5,7 @@ import multer from "multer";
 import path from "path";
 import cors from "cors";
 import dotenv from "dotenv";
+import fs from "fs";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -26,10 +27,11 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Failed to connect to MongoDB", err));
 
-// API creation
-app.get("/", (req, res) => {
-  res.send("Express server is running");
-});
+// Check if the upload directory exists and create if necessary
+const imageUploadPath = './upload/images';
+if (!fs.existsSync(imageUploadPath)) {
+  fs.mkdirSync(imageUploadPath, { recursive: true });
+}
 
 // Image storage engine
 const storage = multer.diskStorage({
@@ -44,13 +46,23 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Creating Upload Endpoint for images
+// Serving static images
 app.use("/images", express.static("upload/images"));
+
+// Use a dynamic base URL (localhost for local development, Render URL for production)
+const baseUrl = process.env.BASE_URL || `http://localhost:${PORT}`;
+
+// Upload Endpoint for images
 app.post("/upload", upload.single("product"), (req, res) => {
   res.json({
     success: 1,
-    image_url: `http://localhost:${PORT}/images/${req.file.filename}`,
+    image_url: `${baseUrl}/images/${req.file.filename}`,
   });
+});
+
+// API creation
+app.get("/", (req, res) => {
+  res.send("Express server is running");
 });
 
 // Schema for Creating Products
