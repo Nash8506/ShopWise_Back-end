@@ -1,0 +1,21 @@
+.
+├── config
+│   ├── db.js
+│   └── env.js
+├── controllers
+│   ├── productController.js
+│   └── userController.js
+├── index.js
+├── models
+│   ├── productModel.js
+│   └── userModel.js
+├── node_modules
+├── package.json
+├── package-lock.json
+├── project_structure.txt
+└── routes
+    ├── productRoutes.js
+    └── userRoutes.js
+├── uploads
+
+5 directories, 12 files
